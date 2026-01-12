@@ -2,11 +2,34 @@ spring:
   application:
     name: "configserver"
   profiles:
-    active: native
+    active: git
   cloud:
+    bus:
+      enabled: true            # <--- Add this
+      id: configserver:8071    # Optional: unique ID for the bus
     config:
       server:
-         native:
-         search-locations: "classpath:/config"
+        monitor:
+          github:
+            enabled: true      # <--- Add this to enable /monitor
+        git:
+          uri: "https://github.com/yaqubadesola/config-server.git"
+          default-label: master
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+  rabbitmq:
+    host: "rabbit"
+    port: 5672
+    username: "guest"
+    password: "guest"
+
+# Rest of your config...
 server:
   port: 8071
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
